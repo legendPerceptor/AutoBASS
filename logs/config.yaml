@@ -1,0 +1,54 @@
+version: 1
+formatters:
+  brief:
+    format: "%(asctime)s - %(message)s"
+  simple:
+    format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    datefmt: '%Y/%m/%d %H:%M:%S'
+handlers:
+  console:
+    class : logging.StreamHandler
+    formatter: brief
+    level   : INFO
+    stream  : ext://sys.stdout
+  file:
+    class : logging.FileHandler
+    formatter: simple
+    level: DEBUG
+    filename: debug.log
+  error:
+    class: logging.handlers.RotatingFileHandler
+    level: ERROR
+    formatter: simple
+    filename: error.log
+    maxBytes: 10485760
+    backupCount: 20
+    encoding: utf8
+loggers:
+  TestRobot:
+    level: DEBUG
+    handlers: [console, error]
+  AssemblyRobot:
+    level: INFO
+    handlers: [console, error]
+  TransportRobot:
+    level: INFO
+    handlers: [console, error]
+  Relay:
+    level: INFO
+    handlers: [console, error]
+  PipettingRobot:
+    level: INFO
+    handlers: [console, error]
+  Rail:
+    level: INFO
+    handlers: [console, error]
+  SystemConfig:
+    level: INFO
+    handlers: [console, error]
+  OffsetDetection:
+    level: INFO
+    handlers: [console, error]
+root:
+  level: INFO
+  handlers: [file, error]
