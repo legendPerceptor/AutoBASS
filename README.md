@@ -1,55 +1,7 @@
 # :battery: + :robot: + :factory: = AutoBASS 
 AutoBASS deploys Automated Battery Assembly System. The motivation of this project is to meet the need of scaling-up and accuate assembly of in-house i.e. non-commercially acquired cells in battery reaserach, therefore enables the data-driven studies on optimization of active materials, electrolyte formulations, processing and manufacturing in a reproducible manner for the investigation of new chemistries.
 
-![](AutoBASS_2_overview.png)
-
-## What are you here for?
-
-I'm here for:
-### Data
-Please go to the data folder of this repo. There you will find four zip files which you need to download and unzip:
-1. cell_data_published.pck 2.zip.001
-2. cell_data_published.pck 2.zip.002
-3. cell_data_published.pck 2.zip.003
-4. cell_data_published.pck 2.zip.004
-
-The problem is that github only allows binary files of 25 mb size so unzip them somewhere and then you'll get a pickle file that you can read in in python via:
-
-```python
-import pickle
-data = pickle.load(open(r'/path/to/the/file/cell_data_published.pck','rb'))
-```
-
-We did this using python 3.7 so make sure you're not using an outdated version.
-Then the data variable will contain all data for all cells (failed or not) as a list of dictionaries.
-For each cell we record: 
-#### **raw data**
-Keys: I, V, t, index, Discharge_Capacity<br/>
-Essentially what the arbin spits out. Index is the cycle index. The Discharge_Capacity is this strange Arbin thing which we keep in
-#### **semi processed data**
-Keys: ocv_assembly, channel, start_time, closing_time, dayli_id, Vsm<br/>
-We write down that potential of the first few seconds, which channel was used, when the cycling started, when the cell was closed, some id to track cells internally and a smoothed voltage profile
-#### **Cell images**
-Keys: anode_image, separator_image, cathode_image<br/>
-Relatively self explanatory by name. If there is no image the camera faulted
-#### **Derived data**
-Keys: dQdV, Q <br/>
-This is data we calculate
-
-#### Example Data access:
-
-Ok let's say we want to see the voltage profile of cell 42 the we do this:
-
-```python
-import pickle
-data = pickle.load(open(r'/path/to/the/file/cell_data_published.pck','rb'))
-
-plt.plot(data[42]['t'],data[42]['V'])
-plt.xlabel('Time [s]')
-plt.ylabel('Voltage [V]')
-```
-
-If you look at the dQ/dV data make sure to scale the plots right as there is still considerable noide in the data. We recooment to plot vs. the smoother Voltage profile which is in the Vsm key.
+![](AutoBASS_2_overview_no_text.png)
 
 ### Building my own
 Have a look at the stl files in the mechanical parts folder.
