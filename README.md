@@ -1,9 +1,39 @@
-# :battery: + :robot: + :factory: = AutoBASS 
-AutoBASS deploys Automated Battery Assembly System. The motivation of this project is to meet the need of scaling-up and accuate assembly of in-house i.e. non-commercially acquired cells in battery reaserach, therefore enables the data-driven studies on optimization of active materials, electrolyte formulations, processing and manufacturing in a reproducible manner for the investigation of new chemistries.
+# :battery: + :robot: + 🧠 + 🏭 = AutoBASS 2.0
+AutoBASS deploys Automated Battery Assembly System. The development of this system is intended to fully automate the assembly procedure of CR2032 coin cell in the field of battery research, in comparision to the pilot production line of industrial scale, this agile automated system will free researchers from the tedious cell assembly work and provide the possibility of producing full cells with "in house-made" electrochemistry in a labortory scale, therefore to faciliate and accelerate the data-driven studies in optimizing of electrochemistry and cycling protocol. The improved version of the system namely AutoBASS 2.0 has integrated the imaging system which makes it possible to live correct the misplacment of each components, therefore, futher increases the reproducibilty and success rate of the cell manufacturing. The newly built multi-chanale electrolyte dispersion station also makes a combinatorial electrolyte sythesis possible.
 
 ![](AutoBASS_2_overview_no_text.png)
 
-### Building my own
+## Data
+Please go to zenodo at [Additive research data](https://zenodo.org/records/11060629). There you will find 3 zip files which you need to download and unzip:
+1. Base.zip
+2. FEC.zip
+3. VC.zip
+
+After unziping them, you will get three folders each with 2 subfolders namely "1mAh" and "3mAh" which corresponds to the two cell batches using area capacity of 1mAh/cm2 and 3mAh/cm2 respectively and each subfolder contains folders named with the information of cell number, mass ratio and additive name of individual cell, in which the cycling data is saved as .CSV  file that you can read in python via:
+```python
+import pandas as pd
+data = pd.read_csv(r"...the/file/path/of/your/.csv")
+```
+Here you need to replace the path with the actual path of .csv files on your PC. We did this using python 3.9 so make sure you're not using an outdated version.
+Then the data variable will contain all data for the specific cell (failed or not) as a dictionary with essentially the raw data what arbin spits out, bassically, we listed the following keys to the data that are most often used:
+
+Keys: Test_Time(s), Voltage(V), Current(A), Cycle_Index, Step_Index
+
+#### Example Data access:
+
+For example, you want to see the voltage profile of the cell:
+
+```python
+import matplotlib.pyplot as plt
+import pandas as pd
+data = pd.read_csv(r"...the/file/path/of/your/.csv")
+
+plt.plot(data['Test_Time(s)'],data['Voltage(V)'])
+plt.xlabel('Time [s]')
+plt.ylabel('Voltage [V]')
+```
+
+## Setup design
 Have a look at the stl files in the mechanical parts folder.
 You will need
 1. A Crimper
@@ -26,7 +56,7 @@ Consider getting a glovebox with forced laminar flow as otherwise there can be i
 The crimper is typically quite heavy and does not need to be fixed additonally. Overall you "just" need to assemble all parts and teach the robot the positions. We taught the robot ALL prositions manually.
 
 
-### Lurking
+## Lurking
 Have a look at the data or code then? Or read the paper which ist published at [JOURNAL]
 
 
