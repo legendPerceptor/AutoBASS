@@ -34,13 +34,52 @@ plt.ylabel('Voltage [V]')
 ```
 
 ## Setup design
+The whole system consists of three action units:
+1. Assembly unit: 6-axis robotic arms (Mecademic meca500 rev.2) + Linear rail (Jenny Science Linax LXS 1800)
+2. Electrolyte unit: 6-axis robotic arms (Mecademic meca500 rev.2) + computer-controlled dispensing module (Sartorius rLINE® 1-ch 200 µl)
+3. Sealing unit: 6-axis robotic arms (Mecademic meca500 rev.2) + Hydraulic coin cell crimping machine (MTI MSK-160E, China)
+Following the standard procedure of CR2032 cell assembly recommonded by collaborator from the BIG-MAP project, stacking sequence will be starting from the positive case to the negative case as shown in the Figure below. An user interface based on python tkinter is developed to faciliate the operation of the system. Two high-resolution webcams (on the robot and next to the building stage) are integrated to provide imaging data of the components.
+
+![Stacking sequence](AutoBASS_2_overview_no_text.png)
+
+### What's new
+In comparision to the previous version of AutoBASS, new features have been developed in the AutoBASS 2.0:
+1. New electrolyte dispersing unit: can choose from up to 16 different electrolytes without cross-contamination
+2. Multi-threading operation: perfom pick-and-place, crimping and despersing in synchornized manner
+3. Active-imaging: misgrab detection and self-correction
+4. New UI: more user-friendly, easy to assgin assembly task
+
+### How to use
+#### Prepearation
+Prepare your materials and components prior to the assembly:
+1. Inactive Components (Anode case, spacer, washer, cathode case) need to be washed in an ultrasonic bath with isopropanol alcohol for 15 mins, dry in the fume hood over 2 hrs and put in the drying oven at 80°C overnight.
+2. Active components (Electrodes, separator) need to be cut into specific sizes in the glovebox:
+   cathode: 14 mm
+   anode: 15 mm
+   separator: 16 mm
+3. Placing compoents onto the tray
+![Placing sequence](AutoBASS_2_overview_no_text.png)
+4. Electrolyte:
+![Stacking sequence](AutoBASS_2_overview_no_text.png)
+
+#### Launch script
+The user interface will guide you through the procedure from scratch:
+
+1. Launch 'AutoBass_v2.py'
+2. Click “Assembly Coin Cell”
+3. Click "Initialize system" and wait for the progress bar to finish
+4. Click “Setup Cells” and go to "Manually Setup"
+5. Check the number(s) of cell(s) you want to start and electrolyte number to disperse, click "Save"
+6. Click "Start Assembly" and the procedure will start
+
+### To build up your own
 Have a look at the stl files in the mechanical parts folder.
 You will need
 1. A Crimper
 2. 3x Mecademic Meca 500 r.3
 3. 2x Meca compatible Schunk Grippers
 4. Jenny Science Linax Linear rail
-5. Satorius rLine dispensing module
+5. Satorius rLine dispensing module rLINE® 1-ch 200 µl
 6. A powerful vacuum pump
 7. 2x 2/2 way Solenoid valve
 8. Ardurino Uno + Relay schield
@@ -59,26 +98,11 @@ The crimper is typically quite heavy and does not need to be fixed additonally. 
 ## Lurking
 Have a look at the data or code then? Or read the paper which ist published at [JOURNAL]
 
-
 ## Motivation
-In battery research, manual coin cell assembly is still the most widely used methode to manufacture the in-house cells for testing, but the precise placement of electrodes and timing of electrolyte injection are challenging for researchers who manually perform the assembly inside of a glovebox. The small variations in manufacturing processe strongly impacts the intrinsic variability the overall system performance such as capacity, resistance and degradation rate between cells, which is a crucial issue that needs to be addressed while performing the data-driven stuides, therefore, we see it35 a pressing need to automate the assembly process, enabling the manufacturing of larger numbers of cells in a reproducible manner for the investigation of new chemistries. We, therefore, build the automatic battery assembly system (AutoBASS) which is capable of assmeblying up to 64 coin cells in a batch, the main parts of AutoBASS consist of two 6-axis robotic arms (Mecademic meca500 rev.2), a linear rail (Jenny Science Linax LXS 1800), and a programmable syring pump, providing a accuracy of placement in 0.2mm and that of electrolyte despersing in 1nL. The assembly procedure is accroding to the standard assembly procedure of Coin Cell 2032 recommonded by BIG-MAP. A graphic user interface is specificly designed for proper operating of the system. Image of electrodes upon placement and real-time record of events during operating of the system were created to help keep track of the variablilty of the cells.
-
-## What's new
-1. New electrolyte dispersing unit: can choose from up to 16 different electrolytes without cross-contamination
-2. Multi-threading operation: perfom pick-and-place, crimping and despersing in synchornized manner
-3. Active-imaging system: misgrab detection and self-correction
-4. New UI: more user-friendly, easy to assgin assembly task
+In battery research, most of the "in-house" made cells were still manually assembled. The cell-to-cell variance during manufacturing processe strongly impacts the overall performance of the system in data-driven stuides, therefore, we see it a pressing need to produce full-cells in a way of resonable reproducibilty and lab-scaled productivity. We therefore developed the automatic battery assembly system (AutoBASS) which is capable of producing a whole batch of up to 64 CR2032 coin cells.
 
 ## Enviroment setup
 AutoBASS is very easy-to-read and user-friendly,  besides hardware drivers you just need a working python 3.7 installation and the drivers for the corresponding hardware as well. If you are using mecademic robots you need to install their (awesome!) python driver too.
-
-## Launch script
-AutoBaSS.py script can automatically guide you through the procedure from scratch:
-    Launch 'AutoBass.py'
-    Click "Assembly Coin Cell"
-    Click "Initialize system" and wait for the progress bar to finish
-    Type in the position of cell you want to start and to finish in numbers (No.1 refers to the cell on the up-left corner, No.64 refers to the one on the down-right corner)
-    Click "Start Assembly" and the procedure will start
 
 
 ## Acknowledgements
