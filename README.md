@@ -1,7 +1,7 @@
-# :battery: + :robot: + 🧠 + 🏭 = AutoBASS 2.0
+# :battery: + :robot: + 👀 + 2x🧵 + 🏭🧪 = AutoBASS 2.0
 AutoBASS deploys Automated Battery Assembly System. The development of this system is intended to fully automate the assembly procedure of CR2032 coin cell in the field of battery research, in comparision to the pilot production line of industrial scale, this agile automated system will free researchers from the tedious cell assembly work and provide the possibility of producing full cells with "in house-made" electrochemistry in a labortory scale, therefore to faciliate and accelerate the data-driven studies in optimizing of electrochemistry and cycling protocol. The improved version of the system namely AutoBASS 2.0 has integrated the imaging system which makes it possible to live correct the misplacment of each components, therefore, futher increases the reproducibilty and success rate of the cell manufacturing. The newly built multi-chanale electrolyte dispersion station also makes a combinatorial electrolyte sythesis possible.
 
-![](AutoBASS_2_overview_no_text.png)
+![AutoBASS 2.0](AutoBASS_2_overview_no_text.png)
 
 ## Data
 Please go to zenodo at [Additive research data](https://zenodo.org/records/11060629). There you will find 3 zip files which you need to download and unzip:
@@ -40,7 +40,7 @@ The whole system consists of three action units:
 3. Sealing unit: 6-axis robotic arms (Mecademic meca500 rev.2) + Hydraulic coin cell crimping machine (MTI MSK-160E, China)
 Following the standard procedure of CR2032 cell assembly recommonded by collaborator from the BIG-MAP project, stacking sequence will be starting from the positive case to the negative case as shown in the Figure below. An user interface based on python tkinter is developed to faciliate the operation of the system. Two high-resolution webcams (on the robot and next to the building stage) are integrated to provide imaging data of the components.
 
-![Stacking sequence](AutoBASS_2_overview_no_text.png)
+<img src="Intro_Images/Coin_Cell_Rendering.png" alt="Stacking Sequence" width="200"/>
 
 ### What's new
 In comparision to the previous version of AutoBASS, new features have been developed in the AutoBASS 2.0:
@@ -53,24 +53,40 @@ In comparision to the previous version of AutoBASS, new features have been devel
 #### Prepearation
 Prepare your materials and components prior to the assembly:
 1. Inactive Components (Anode case, spacer, washer, cathode case) need to be washed in an ultrasonic bath with isopropanol alcohol for 15 mins, dry in the fume hood over 2 hrs and put in the drying oven at 80°C overnight.
+   
 2. Active components (Electrodes, separator) need to be cut into specific sizes in the glovebox:
    cathode: 14 mm
    anode: 15 mm
    separator: 16 mm
-3. Placing compoents onto the tray
-![Placing sequence](AutoBASS_2_overview_no_text.png)
+   
+3. Placing compoents onto the tray:
+<img src="Intro_Images/Prepearation_sequance.png" alt="Placing" width="800"/>
+
 4. Electrolyte:
-![Stacking sequence](AutoBASS_2_overview_no_text.png)
+<img src="Intro_Images/Electrolyte.png" alt="Electrolyte" width="600"/>
 
 #### Launch script
 The user interface will guide you through the procedure from scratch:
 
 1. Launch 'AutoBass_v2.py'
-2. Click “Assembly Coin Cell”
-3. Click "Initialize system" and wait for the progress bar to finish
-4. Click “Setup Cells” and go to "Manually Setup"
-5. Check the number(s) of cell(s) you want to start and electrolyte number to disperse, click "Save"
-6. Click "Start Assembly" and the procedure will start
+   
+2. Click “Assembly Coin Cell” -> Click "Initialize system" and wait for the progress bar to finish
+
+<img src="Intro_Images/UI_1.png" alt="UI1" width="400"/>
+
+3. Click “Setup Cells” and go to "Manually Setup"
+
+<img src="Intro_Images/UI_2.png" alt="UI2" width="400"/>
+
+4. Check the number(s) of cell(s) you want to start and electrolyte number to disperse, click "Save"
+
+<img src="Intro_Images/UI_3.png" alt="UI3" width="400"/>
+
+5. Click "Start Assembly" and the procedure will start
+
+<img src="Intro_Images/UI_4.png" alt="UI4" width="400"/>
+
+
 
 ### To build up your own
 Have a look at the stl files in the mechanical parts folder.
