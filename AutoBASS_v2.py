@@ -10,8 +10,10 @@ import Assembly_v2 as asb
 import Robot_test_UI as testrob
 from Position_generator import ResetParameter
 
-PATH = os.path.dirname(__file__)
-AUTOBASS_CELL_CONFIG = os.path.join(PATH, 'data', 'Cell_to_assemble.json')
+from pathlib import Path
+
+cur_dir = os.path.dirname(__file__)
+AUTOBASS_CELL_CONFIG = os.path.join(cur_dir, 'data', 'Cell_to_assemble.json')
 FINALES_CELL_CONFIG = "C:/Users/Operator/Desktop/Bojing/AutoBASS_Tenant/AutoBASS_Tenant/src/AutoBASS_Tenant/Cell_to_assemble_finales.json"
 AUTOBASS_LOCAL_SIGNAL = "C:/Users/Operator/Desktop/Bojing/AutoBASS_Tenant/AutoBASS_Tenant/src/AutoBASS_Tenant/AutoBASS_local_signal.json"
  
@@ -60,10 +62,10 @@ class AutobassGUI(ResetParameter):
         window.geometry(f"{window_width}x{window_height}+{window_x+offset[0]}+{window_y+offset[1]}")
 
     def set_init_window(self):
-        os.chdir(f"{PATH}\images")
+        image_folder = Path(cur_dir) / "images"
         # Set the title, icon, size of the initial window
         self.init_window.title("AutoBASS GUI")
-        self.init_window.iconbitmap("Robotarm.ico")
+        self.init_window.iconbitmap(str(image_folder / "Robotarm.ico"))
 
         self.centralize_window(self.init_window, 820, 450)
 
@@ -143,11 +145,11 @@ class AutobassGUI(ResetParameter):
             assembly_btn['state'] = 'disabled'
 
     def setup_cell(self):
-        os.chdir(f"{PATH}\images")
+        image_folder = Path(cur_dir) / "images"
         global dispense_window
         dispense_window = Toplevel()
         dispense_window.title("Select Dispense Mode")
-        dispense_window.iconbitmap("Robotarm.ico")
+        dispense_window.iconbitmap(str(image_folder / "Robotarm.ico"))
 
         self.centralize_window(dispense_window, 480, 280)
 
@@ -163,9 +165,9 @@ class AutobassGUI(ResetParameter):
         for widget in dispense_window.winfo_children():
             widget.destroy()
 
-        os.chdir(f"{PATH}\images")
+        image_folder = Path(cur_dir) / "images"
         dispense_window.title("Setup Dispense")
-        dispense_window.iconbitmap("Robotarm.ico")
+        dispense_window.iconbitmap(str(image_folder / "Robotarm.ico"))
 
         self.centralize_window(dispense_window, 1080, 800)
 
@@ -218,8 +220,8 @@ class AutobassGUI(ResetParameter):
                     Cell_Check_Vals[Nr].set(1)
             update_color()
 
-        os.chdir(f"{PATH}\data")
-        with open('Cell_to_assemble.json') as infile:
+        data_folder = Path(cur_dir) / "data"
+        with open(str(data_folder / 'Cell_to_assemble.json')) as infile:
             setings = json.load(infile)
 
         # Specify font of labels and button's text
@@ -374,8 +376,8 @@ class AutobassGUI(ResetParameter):
         Phrase the saved jason data into a tuple which is compatible to one_cell function
         The tuple is a serial of single cell infomations, which is in the form: (cell_number, electrolyte_number, electrolyte_volume, breakinfo_dict)
         """
-        os.chdir(f"{PATH}\data")
-        with open('Cell_to_assemble.json') as infile:
+        data_folder = Path(cur_dir) / "data"
+        with open(str(data_folder / 'Cell_to_assemble.json')) as infile:
             self.settings = json.load(infile)
         cell_infos = []
         bk_config = self.settings['Broken']
@@ -386,8 +388,7 @@ class AutobassGUI(ResetParameter):
                              bk_config['additive_nr'], bk_config['additive_vol'], bk_config)]
             else:
                 self.settings['Broken'].update(dict(cell_nr=-1, step=0, component=0, pre_operation=-1, step_mark=1))
-                os.chdir(f"{PATH}\data")
-                with open('Cell_to_assemble.json', 'w') as outfile:
+                with open(str(data_folder / 'Cell_to_assemble.json'), 'w') as outfile:
                         json.dump(self.settings, outfile, indent=4)
         for cell_count, cell_info in self.settings['New'].items():
             if cell_info[0] == 1:
@@ -506,12 +507,12 @@ class AutobassGUI(ResetParameter):
     
     def init_assembly_system(self):
         self.gui_state = 'Assembly'
-        os.chdir(f"{PATH}\images")
+        image_folder = Path(cur_dir) / "images"
         if self.workflow.status["Initiated"] != True:
             initiate_btn['state'] = 'disabled'
             prog_window = Toplevel()
             prog_window.title("Assembly Robot initializing")
-            prog_window.iconbitmap("Robotarm.ico")
+            prog_window.iconbitmap(str(image_folder / "Robotarm.ico"))
             prog_window.geometry('280x150')
             prog_text = StringVar()
             prog_label = Label(prog_window, textvariable=prog_text, font=ft_label, pady=10, anchor=CENTER)
@@ -556,7 +557,7 @@ class AutobassGUI(ResetParameter):
     def _create_cells_log(self, cell_infos:tuple):
         if len(cell_infos) > 0:
             today = time.strftime("%Y_%m_%d", time.localtime())
-            cellLogDir = os.path.join(PATH, 'Alignments', today)
+            cellLogDir = str(Path(cur_dir) / 'Alignments' / today)
             if not os.path.exists(cellLogDir):
                 os.makedirs(cellLogDir)
             file_name = os.path.join(cellLogDir, 'Cells_Log.json')
@@ -722,8 +723,8 @@ class AutobassGUI(ResetParameter):
         Phrase the saved jason data into a tuple which is compatible to one_cell function
         The tuple is a serial of single cell infomations, which is in the form: (cell_number, electrolyte_number, electrolyte_volume, breakinfo_dict)
         """
-        os.chdir(f"{PATH}\data")
-        with open('Cell_to_assemble.json') as infile:
+        data_folder = Path(cur_dir) / "data"
+        with open(str(data_folder / 'Cell_to_assemble.json')) as infile:
             self.settings = json.load(infile)
         cell_infos = []
         bk_config = self.settings['Broken']
@@ -734,8 +735,7 @@ class AutobassGUI(ResetParameter):
                              bk_config['additive_nr'], bk_config['additive_vol'], bk_config)]
             else:
                 self.settings['Broken'].update(dict(cell_nr=-1, step=0, component=0, pre_operation=-1, step_mark=1))
-                os.chdir(f"{PATH}\data")
-                with open('Cell_to_assemble.json', 'w') as outfile:
+                with open(str(data_folder / 'Cell_to_assemble.json'), 'w') as outfile:
                         json.dump(self.settings, outfile, indent=4)
         for cell_count, cell_info in self.settings['New'].items():
             if cell_info[0] == 1:
@@ -878,8 +878,8 @@ class AutobassGUI(ResetParameter):
         # Basically we are only dealing with the latest request
         result_id:str = list(taskData.keys())[-1]
         date = time.strftime("%Y_%m_%d", time.localtime())
-        resultDir = os.path.join(PATH, 'Alignments', date, 'Origin', 'Cathode_Drop')
-        with open(os.path.join(PATH, 'Alignments', date, 'Cells_Log.json')) as sealingRecord:
+        resultDir = os.path.join(cur_dir, 'Alignments', date, 'Origin', 'Cathode_Drop')
+        with open(os.path.join(cur_dir, 'Alignments', date, 'Cells_Log.json')) as sealingRecord:
             cellsLog:dict = json.load(sealingRecord)
         if not os.path.exists(resultDir):
             messagebox.showerror("Error!", message="No Results is available!")
@@ -923,9 +923,9 @@ class AutobassGUI(ResetParameter):
         statusLabel.pack(pady=20)
 
         # Define Our Images
-        os.chdir(f"{PATH}\images")
-        onImage = PhotoImage(file = "on.png")
-        offImage = PhotoImage(file = "off.png")
+        image_folder = Path(cur_dir) / "images"
+        onImage = PhotoImage(file = str(image_folder / "on.png"))
+        offImage = PhotoImage(file = str(image_folder / "off.png"))
 
         connectFrame = LabelFrame(dispense_window, borderwidth=5)
         connectFrame.pack(pady=20)
@@ -964,9 +964,9 @@ class AutobassGUI(ResetParameter):
 
         for widget in dispense_window.winfo_children():
             widget.destroy()
-        os.chdir(f"{PATH}\images")
+        image_folder = Path(cur_dir) / "images"
         dispense_window.title("Select Dispense Mode")
-        dispense_window.iconbitmap("Robotarm.ico")
+        dispense_window.iconbitmap(image_folder / "Robotarm.ico")
 
         self.centralize_window(dispense_window, 480, 280)
 
@@ -978,7 +978,6 @@ class AutobassGUI(ResetParameter):
         Button(dispense_window, text="Back", borderwidth=4, padx=35, font=ft_button, command=_back_to_assembly_gui).grid(row=1, column=0, columnspan=3, pady=20)
 
 if __name__ == "__main__":
-    os.chdir(PATH)
     ao = AutobassGUI()
     ao.set_init_window()
     if ao.shutdown_click == False:

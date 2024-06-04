@@ -4,12 +4,14 @@ import json
 import logging
 import threading
 import serial
+
+from pathlib import Path
 from MecademicRobot import RobotController
 
 # Creat logging instant
 logger = logging.getLogger('TransportRobot')
 
-PATH = os.path.dirname(__file__)
+cur_dir = os.path.dirname(__file__)
 
 # IP address of robots
 TRANSPORT_HOST = "192.168.31.232"
@@ -17,10 +19,11 @@ TRANSPORT_HOST = "192.168.31.232"
 CRIMPER_PORT = "COM3"
 
 # Robot Constant
-os.chdir(f"{PATH}\data")
+# os.chdir(f"{PATH}\data")
+config_constant_path = Path(cur_dir) / "data" / "config.json"
 
 # Get latest constant values from config file
-with open('config.json') as json_file:
+with open(config_constant_path) as json_file:
     CONSTANT = json.load(json_file)
 
 # Tool constants

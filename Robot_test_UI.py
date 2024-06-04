@@ -14,11 +14,13 @@ from tkinter import messagebox
 from PIL import ImageTk, Image
 from MecademicRobot import RobotFeedback
 from MecademicRobot import RobotController
-from Ardurino_relay import Ardurelay
+# from Ardurino_relay import Ardurelay
 from Rail import Rail
 from data.obj_config import CONFIG, OBJECT_LIST
 
-PATH = os.path.dirname(__file__) # ..../config
+from pathlib import Path
+
+cur_dir = os.path.dirname(__file__) # ..../config
 
 # IP address of robots
 ASSEMBLY_HOST = "192.168.31.231"
@@ -36,9 +38,10 @@ CAM_PORT_BTM = 1
 CAM_PORT_TOP = 2
 
 # Robot Constant
-os.chdir(f"{PATH}\data")
+# os.chdir(f"{PATH}\data")
+calibration_constant_file = Path(cur_dir) / "data" / "calibration.json"
 # RefreshPosition Constant
-with open('calibration.json') as json_file:
+with open(calibration_constant_file) as json_file:
     CONSTANT = json.load(json_file)
 
 # Assembly constant
@@ -58,11 +61,11 @@ SUCTION = 2
 NORM = 3
 FLIPED = 4
 
-class TestAssemblyRobot(RobotController, Rail, Ardurelay):
+class TestAssemblyRobot(RobotController, Rail):
     def __init__(self, address=ASSEMBLY_HOST, vacuum_port=ARDU_PORT):
         Rail.__init__(self)
         RobotController.__init__(self, address)
-        Ardurelay.__init__(self, vacuum_port)
+        # Ardurelay.__init__(self, vacuum_port)
         self.load_parameter()
         self.reset_status()
         self.setup_logging()
@@ -72,8 +75,7 @@ class TestAssemblyRobot(RobotController, Rail, Ardurelay):
 #----------------------Config functions----------------------
 
     def load_parameter(self):
-        os.chdir(f"{PATH}\data")
-        with open('calibration.json') as json_file:
+        with open(calibration_constant_file) as json_file:
             self.parameter = json.load(json_file)
         # Location parameter set for robot and rail.
         # Format: {'Component Name': [Holer Position, Grab z value, Drop z value, [Pre-Drop Positoion], {'Component Nr.': [Pre-grab Position]}]}
@@ -354,10 +356,10 @@ class TestAssemblyRobot(RobotController, Rail, Ardurelay):
 #----------------------GUI functions----------------------
 
     def initiate_sys(self):
-        os.chdir(f"{PATH}\images")
+        image_folder = Path(cur_dir) / "images"
         prog_window = Toplevel()
         prog_window.title("Assembly Robot initializing")
-        prog_window.iconbitmap("Robotarm.ico")
+        prog_window.iconbitmap(str(image_folder / "Robotarm.ico"))
         prog_window.geometry('280x150')
         prog_text = StringVar()
         prog_label = Label(prog_window, textvariable=prog_text, font=ft_label, pady=10, anchor=CENTER)
@@ -381,7 +383,7 @@ class TestAssemblyRobot(RobotController, Rail, Ardurelay):
 
     def free_move(self):
         self.exit_fm_flag = False
-        os.chdir(f"{PATH}\images")
+        image_folder = Path(cur_dir) / "images"
         try:
             self.test_aseembly_run_window.state(newstate='iconic')
         except AttributeError:
@@ -390,7 +392,7 @@ class TestAssemblyRobot(RobotController, Rail, Ardurelay):
 
         # Set the title, icon, size of the initial window
         free_move_window.title("Freemove GUI")
-        free_move_window.iconbitmap("Robotarm.ico")
+        free_move_window.iconbitmap(str(image_folder / "Robotarm.ico"))
         free_move_window.geometry("830x660")
 
         # Create status bar
@@ -622,21 +624,21 @@ class TestAssemblyRobot(RobotController, Rail, Ardurelay):
             threading.Thread(name='FreeMove', target=self.free_move_rob, args=(axis, step,)).start()
 
     def set_test_assembly(self, mainLev:Tk=None):
-        os.chdir(f"{PATH}\images")
+        image_folder = Path(cur_dir) / "images"
         # Start a new window
         self.test_assembly_config_window = Toplevel()
         self.test_assembly_config_window.title("Assembly Robot Testing Interface")
-        self.test_assembly_config_window.iconbitmap("Robotarm.ico")
+        self.test_assembly_config_window.iconbitmap(str(image_folder / "Robotarm.ico"))
         # self.test_assembly_config_window.geometry("460x490")
 
         # Load images
         global arrow_left, arrow_right, arrow_up, arrow_down, centrer, done
-        arrow_left = ImageTk.PhotoImage(Image.open("arrow_left.png"))
-        arrow_right = ImageTk.PhotoImage(Image.open("arrow_right.png"))
-        arrow_up = ImageTk.PhotoImage(Image.open("arrow_up.png"))
-        arrow_down = ImageTk.PhotoImage(Image.open("arrow_down.png"))
-        centrer = ImageTk.PhotoImage(Image.open("centrer.png"))
-        done = ImageTk.PhotoImage(Image.open("done.png"))
+        arrow_left = ImageTk.PhotoImage(Image.open(str(image_folder / "arrow_left.png")))
+        arrow_right = ImageTk.PhotoImage(Image.open(str(image_folder / "arrow_right.png")))
+        arrow_up = ImageTk.PhotoImage(Image.open(str(image_folder / "arrow_up.png")))
+        arrow_down = ImageTk.PhotoImage(Image.open(str(image_folder / "arrow_down.png")))
+        centrer = ImageTk.PhotoImage(Image.open(str(image_folder / "centrer.png")))
+        done = ImageTk.PhotoImage(Image.open(str(image_folder / "done.png")))
 
         # Specify font of labels and button's text
         global ft_label, ft_button
@@ -774,12 +776,12 @@ class TestAssemblyRobot(RobotController, Rail, Ardurelay):
         def exit_show():
             self.exit_flag = True
         
-        os.chdir(f"{PATH}\images")
+        image_folder = Path(cur_dir) / "images"
         self.test_assembly_config_window.state(newstate='iconic')
         global cam_calib_window
         cam_calib_window = Toplevel()
         cam_calib_window.title("Running Camera Calibration")
-        cam_calib_window.iconbitmap("Robotarm.ico")
+        cam_calib_window.iconbitmap(str(image_folder / "Robotarm.ico"))
 
         # Create status bar
         self.cam_calib_status = StringVar()
@@ -1004,11 +1006,12 @@ class TestAssemblyRobot(RobotController, Rail, Ardurelay):
                     messagebox.showerror("Error!", "Initiate System first!")
             
     def init_asemb_test_gui(self):
-        os.chdir(f"{PATH}\images")
+        # os.chdir(f"{PATH}\images")
+        image_folder = Path(cur_dir) / "images"
         self.test_assembly_config_window.state(newstate='iconic')
         self.test_aseembly_run_window = Toplevel()
         self.test_aseembly_run_window.title("Running Assembly Test")
-        self.test_aseembly_run_window.iconbitmap("Robotarm.ico")
+        self.test_aseembly_run_window.iconbitmap(str(image_folder / "Robotarm.ico"))
         self.test_aseembly_run_window.geometry("535x350")
 
         # Create status bar
@@ -1111,7 +1114,8 @@ class TestAssemblyRobot(RobotController, Rail, Ardurelay):
 #----------------------Saving functions----------------------
 
     def save_position(self):
-        os.chdir(f"{PATH}\data")
+        data_folder = Path(cur_dir) / "data"
+        calibration_config_file = str(data_folder / 'calibration.json')
         if self.status['Testmode'] == 'grab':
             rail_po = self.getPosition()
             grab_po = list(self.GetPose())
@@ -1121,7 +1125,7 @@ class TestAssemblyRobot(RobotController, Rail, Ardurelay):
                 extra_msg = ' and [Cathode_Spacer]'
             else:
                 extra_msg = ''
-            with open('calibration.json', 'w') as json_file:
+            with open(calibration_config_file, 'w') as json_file:
                 json.dump(self.parameter, json_file, indent=4)
             logging.warning(f"Component [{self.component}]{extra_msg} Nr.[{self.current_nr}]'s grab position has been updated- RailPO: [{rail_po}]; GrabPO: {grab_po}") 
             self.test_asemb_status.set(f"Grab Position(s) of {self.component}{extra_msg} No.[{self.current_nr}] has been saved: {grab_po}")
@@ -1133,7 +1137,7 @@ class TestAssemblyRobot(RobotController, Rail, Ardurelay):
                 extra_msg = ' and [Cathode_Spacer]'
             else:
                 extra_msg = ''
-            with open('calibration.json', 'w') as json_file:
+            with open(calibration_config_file, 'w') as json_file:
                 json.dump(self.parameter, json_file, indent=4)
             logging.warning(f"Component [{self.component}]{extra_msg} Nr.[{self.current_nr}]'s drop position has been updated: {drop_po}")
             self.test_asemb_status.set(f"Drop Position(s) of {self.component}{extra_msg} No.[{self.current_nr}] has been saved: {drop_po}")
@@ -1146,7 +1150,7 @@ class TestAssemblyRobot(RobotController, Rail, Ardurelay):
                 extra_msg = ' and [Cathode_Spacer]'
             else:
                 extra_msg = ''
-            with open('calibration.json', 'w') as json_file:
+            with open(calibration_config_file, 'w') as json_file:
                 json.dump(self.parameter, json_file, indent=4)
             logging.warning(f"Component [{self.component}]{extra_msg} Nr.[{self.current_nr}]'s grab position has been updated- RailPO: [{rail_po}]; GrabPO: {grab_po}")
             self.test_asemb_status.set(f"Grab Position(s) of {self.component}{extra_msg} No.[{self.current_nr}] has been saved: {grab_po}")
@@ -1158,7 +1162,7 @@ class TestAssemblyRobot(RobotController, Rail, Ardurelay):
                 extra_msg = ' and [Cathode_Spacer]'
             else:
                 extra_msg = ''
-            with open('calibration.json', 'w') as json_file:
+            with open(calibration_config_file, 'w') as json_file:
                 json.dump(self.parameter, json_file, indent=4)
             logging.warning(f"Component [{self.component}]{extra_msg} Nr.[{self.current_nr}]'s drop position has been updated: {drop_po}")
             self.test_asemb_status.set(f"Drop Position(s) of {self.component}{extra_msg} No.[{self.current_nr}] has been saved: {drop_po}")
@@ -1167,7 +1171,7 @@ class TestAssemblyRobot(RobotController, Rail, Ardurelay):
             p_to_save = list(self.GetPose())
             if self.save_cam != None and p_to_save[1] > 160:
                 self.parameter[self.save_cam] = p_to_save
-                with open('calibration.json', 'w') as json_file:
+                with open(calibration_config_file, 'w') as json_file:
                     json.dump(self.parameter, json_file, indent=4)
                 logging.warning(f"Camera Position {self.save_cam} has been updated: {p_to_save}")
 
@@ -1185,13 +1189,15 @@ class TestTransportRobot(RobotController):
         self.status = dict(Tool=None, Testmode=None, Progress=dict(Initiate=0), Initiated=False)
 
     def load_parameter(self):
-        os.chdir(f"{PATH}\data")
-        with open('calibration.json', 'r') as json_file:
+        data_folder = Path(cur_dir) / "data"
+        calibration_config_file = str(data_folder / 'calibration.json')
+        with open(calibration_config_file, 'r') as json_file:
             self.constant = json.load(json_file)
     
     def write_parameter(self):
-        os.chdir(f"{PATH}\data")
-        with open('calibration.json', 'w') as json_file:
+        data_folder = Path(cur_dir) / "data"
+        calibration_config_file = str(data_folder / 'calibration.json')
+        with open(calibration_config_file, 'w') as json_file:
             json.dump(self.constant, json_file, indent=4)
 
     def setup_logging(self, default_path='config.yaml', default_level=logging.INFO):
@@ -1485,7 +1491,8 @@ class TestTransportRobot(RobotController):
     def free_move(self):
         global exit_flag
         exit_flag = False
-        os.chdir(f"{PATH}\images")
+        # os.chdir(f"{PATH}\images")
+        image_folder = Path(cur_dir) / "images"
         self.test_transport_window.state(newstate='iconic')
         free_move_window = Toplevel()
 
@@ -1495,7 +1502,7 @@ class TestTransportRobot(RobotController):
 
         # Set the title, icon, size of the initial window
         free_move_window.title("Freemove GUI")
-        free_move_window.iconbitmap("Robotarm.ico")
+        free_move_window.iconbitmap(str(image_folder / "Robotarm.ico"))
         free_move_window.geometry("830x660")
 
         # Create status bar
@@ -1683,11 +1690,11 @@ class TestTransportRobot(RobotController):
     def init_trans_test_gui(self, mainLev:Tk=None):
         self.status['Testmode'] = 'Start Menu'
 
-        os.chdir(f"{PATH}\images")
+        image_folder = Path(cur_dir) / "images"
         # Start a new window
         self.test_transport_window = Toplevel()
         self.test_transport_window.title("Transport Robot Testing Interface")
-        self.test_transport_window.iconbitmap("Robotarm.ico")
+        self.test_transport_window.iconbitmap(str(image_folder / "Robotarm.ico"))
         self.test_transport_window.geometry("420x320")
 
         # Load images
@@ -1746,10 +1753,11 @@ class TestTransportRobot(RobotController):
     
     def initiate_test(self):
 
-        os.chdir(f"{PATH}\images")
+        image_folder = Path(cur_dir) / "images"
+        
         prog_window = Toplevel()
         prog_window.title("Transport Robot initializing")
-        prog_window.iconbitmap("Robotarm.ico")
+        prog_window.iconbitmap(str(image_folder / "Robotarm.ico"))
         prog_window.geometry('280x150')
         prog_text = StringVar()
         prog_label = Label(prog_window, textvariable=prog_text, font=ft_label, pady=10, anchor=CENTER)
@@ -1973,7 +1981,6 @@ class TestTransportRobot(RobotController):
             \n['MAG_TWO_PO']: {self.constant['MAG_TWO_PO']}")
 
 if __name__ == '__main__':
-    os.chdir(PATH)
     # ui = TestTransportRobot()
     # ui.init_trans_test_gui()
     ui = TestAssemblyRobot()
